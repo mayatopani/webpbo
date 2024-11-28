@@ -17,8 +17,10 @@
 						<option value=""> Pilih Category</option>
 						<?php
 							include_once("config.php");
-							
-							$result = mysqli_query($mysqli, "SELECT * FROM categories ORDER BY ROWID DESC");
+							$db = new Database();
+							$sql ="SELECT * FROM categories ORDER BY ROWID DESC";
+							$result = $db->query($sql);
+
 							while($row = mysqli_fetch_array($result)) {
 									echo "<option value='" . $row['KD_KATEGORI'] . "'>" . $row['NM_KATEGORI'] . "</option>";
 							}
@@ -69,8 +71,8 @@
 
 		include_once("config.php");
 		move_uploaded_file($_FILES["fileImage"]["tmp_name"], $targetFilePath);
-		$result = mysqli_query($mysqli, "INSERT INTO products(KD_KATEGORI,KD_BARANG,NM_BARANG,HARGA,JUMLAH,IMAGE,FLAG_AKTIF) VALUES('$category','$kode','$name','$price','$qty','$fileName','Y')");
-		
+		$sql = "INSERT INTO products(KD_KATEGORI,KD_BARANG,NM_BARANG,HARGA,JUMLAH,IMAGE,FLAG_AKTIF) VALUES('$category','$kode','$name','$price','$qty','$fileName','Y')";
+		 $result = $db->query($sql);
 		//header("Location: index.php");
 	}
 	?>

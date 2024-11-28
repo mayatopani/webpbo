@@ -1,6 +1,8 @@
 <?php 
  session_start();
- 
+ // Membuat instance dari kelas Database
+$db = new Database();
+
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
 }
@@ -27,3 +29,7 @@ if (!isset($_SESSION['email'])) {
     </div>
 </body>
 </html>
+<?php
+// Tutup koneksi
+$db->close();
+?>

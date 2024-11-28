@@ -5,6 +5,9 @@ include 'config.php';
 error_reporting(0);
 
 session_start();
+
+// Membuat instance dari kelas Database
+$db = new Database();
  
 if (isset($_SESSION['email'])) {
     header("Location: sukses.php");
@@ -15,7 +18,8 @@ if (isset($_POST['submit'])) {
     $password = md5($_POST['password']);
  
     $sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-    $result = mysqli_query($mysqli, $sql);
+    $result = $db->query($sql);
+   
     if ($result->num_rows > 0) {
         $row = mysqli_fetch_assoc($result);
         $_SESSION['email'] = $row['email'];
@@ -57,3 +61,7 @@ if (isset($_POST['submit'])) {
     </div>
 </body>
 </html>
+<?php
+// Tutup koneksi
+$db->close();
+?>

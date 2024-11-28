@@ -1,7 +1,7 @@
 <?php
 
 include_once("config.php");
- 
+$db = new Database();
 
 if(isset($_POST['update']))
 {	
@@ -28,8 +28,8 @@ if(isset($_POST['update']))
         $imageNew = $addImage;
     }
 	
-	$result = mysqli_query($mysqli, "UPDATE products SET KD_KATEGORI = '$category', NM_BARANG = '$name', HARGA = '$price', JUMLAH = '$qty', IMAGE = '$imageNew' WHERE ROWID = $id");
-	
+	$sql = "UPDATE products SET KD_KATEGORI = '$category', NM_BARANG = '$name', HARGA = '$price', JUMLAH = '$qty', IMAGE = '$imageNew' WHERE ROWID = $id";
+	$result = $db->query($sql);
 	header("Location: index.php");
 }
 ?>
@@ -37,8 +37,8 @@ if(isset($_POST['update']))
 <?php
 $id = $_GET['id'];
 
-$result = mysqli_query($mysqli, "SELECT * FROM products WHERE ROWID = $id");
- 
+$sql = "SELECT * FROM products WHERE ROWID = $id";
+$result = $db->query($sql);
 while($data_barang = mysqli_fetch_array($result))
 {
 	$name       = $data_barang['NM_BARANG'];
@@ -69,8 +69,9 @@ while($data_barang = mysqli_fetch_array($result))
 					  <?php
 						include_once("config.php");
 
-						$q_category = mysqli_query($mysqli, "SELECT * FROM categories");
-						while($data_category = mysqli_fetch_array($q_category)) {
+						$q_category = "SELECT * FROM categories";
+						$result_1 = $db->query($q_category);
+						while($data_category = mysqli_fetch_array($result_1)) {
 							
 							if ($category == $data_category['KD_KATEGORI']) {
 								$select="selected";

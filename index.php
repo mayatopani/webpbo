@@ -1,7 +1,9 @@
 <?php
 include_once("config.php");
- 
-$result = mysqli_query($mysqli, "   
+ // Membuat instance dari kelas Database
+$db = new Database();
+
+$sql = "   
         SELECT 
             A.KD_BARANG, 
             A.KD_KATEGORI, 
@@ -18,7 +20,8 @@ $result = mysqli_query($mysqli, "
         ORDER BY 
             A.ROWID 
         DESC
-    ");
+    ";
+    $result = $db->query($sql);
 ?>
  <!DOCTYPE html>
 <html>
@@ -59,3 +62,8 @@ $result = mysqli_query($mysqli, "
     </table>
 </body>
 </html>
+
+<?php
+// Tutup koneksi
+$db->close();
+?>
