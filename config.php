@@ -5,7 +5,7 @@ class Database
     private $host = "localhost";      // Nama host
     private $username = "root";       // Username
     private $password = "";           // Password
-    private $db_name = "db_sipp"; // Nama database
+    private $db_name = "db_sipp";    // Nama database
     private $conn;                    // Properti untuk koneksi
 
     // Constructor untuk membuat koneksi saat objek dibuat
