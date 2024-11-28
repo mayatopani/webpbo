@@ -1,0 +1,185 @@
+<html> 
+<head><title>Kategori Barang with Ajax jQuery</title> 
+<script type="text/javascript" src="jquery.js"> </script> 
+<script> 
+    var kode; 
+    var nm_kategori; 
+    var fg_aktif; 
+    var datanya; 
+
+$(document).ready(function(){ 
+    //meloading option Kode Kategori dari database 
+    $("#kode").load("proses.php","action=ambiloption"); 
+    
+    //jika ada event onchange ambil data dari database 
+    $("#kode").change(function(){ 
+        //ambil nilai Kode Kategori dari form 
+        kode = $("#kode").val(); 
+        var dataform = $('#form_kategori').serializeArray();
+			dataform.push({name: "kode", value: kode});
+
+        //tampilkan status loading dan animasinya 
+        $("#status").html("Loading..."); 
+        $("#loading").show(); 
+
+        $.ajax({ 
+            url     : 'proses.php?action=ambildata',
+            type    : 'post',
+            data    : dataform,
+            cache   : false, 
+            success : function(msg){ 
+                //karna di server pembatas setiap data adalah | 
+                //maka kita split dan akan membentuk array 
+                data = msg.split("|"); 
+                
+                //masukkan ke masing-masing textfield
+                $("#kode2").val(data[0]); 
+                $("#nm_kategori").val(data[1]); 
+				if (data[2] == 'Y'){
+					$('#fg_aktif').attr('checked',true); 
+				} else {
+					$('#fg_aktif').attr('checked',false); 
+				}	
+
+                //hilangkan status dan animasi loading 
+                $("#status").html(""); 
+                $("#loading").hide(); 
+            } 
+        }); 
+    }); 
+
+    //jika tombol update diclick 
+    $("#tupdate").click(function(){ 
+        //ambil nilai-nilai dari masing-masing input 
+        kode = $("#kode").val(); 
+
+        if(kode=="Pilih Kode"){ 
+            alert("Pilih dulu Kode"); 
+            exit(); 
+        } 
+
+        //tampilkan status Updating dan animasinya 
+        $("#status").html("Lagi diupdate..."); 
+        $("#loading").show(); 
+
+        var dataform = $('#form_kategori').serializeArray();
+        $.ajax({
+            url     : 'proses.php?action=edit',
+            type    : 'post',
+            data    : dataform,
+            cache   : false, 
+            success: function(msg) {
+                if(msg=="sukses"){ 
+                    $("#status").html("Update Berhasil..."); 
+                }else{ 
+                    $("#status").html("ERROR.."); 
+                } 
+                $("#loading").hide(); 
+            }
+        });
+    });
+
+    //jika tombol DELETE diklik 
+    $("#tdelete").click(function(){ 
+        kode = $("#kode").val(); 
+
+        if(kode=="Pilih Kode"){ 
+            alert("Pilih dulu Kode"); 
+            exit(); 
+        } 
+
+        $("#status").html("Lagi didelete..."); 
+        $("#loading").show(); 
+
+        var dataform = $('#form_kategori').serializeArray();
+            dataform.push({name: "kode", value: kode});
+        $.ajax({ 
+            url     : 'proses.php?action=delete',
+            type    : 'post',
+            data    : dataform,
+            cache   : false,
+            success : function(msg){ 
+                if(msg=="sukses"){ 
+                    $("#status").html("Delete Berhasil..."); 
+                }else{ 
+                    $("#status").html("ERROR.."); 
+                } 
+                    $("#nm_kategori").val("");
+                    $("#loading").hide(); 
+                    $("#kode").load("proses.php","action=ambiloption"); 
+            } 
+        }); 
+    }); 
+    
+    //jika link Tambah Data Kategori diklik 
+    $("#formtambah").click(function(){ 
+        $("#formkode").show(); 
+        $("#kode2").val(""); 
+        $("#nm_kategori").val(""); 
+    }); 
+    
+    //jika tombol TAMBAH diklik 
+    $("#ttambah").click(function(){ 
+
+        //ambil nilai-nilai dari masing-masing input 
+        kode = $("#kode2").val(); 
+        if(kode==""){ 
+            alert("Kode belum diisi\nKlik Tambah Data Kategori"); 
+            exit(); 
+        } 
+
+        $("#status").html("Lagi ditambah..."); 
+        $("#loading").show(); 
+
+        var dataform = $('#form_kategori').serializeArray();
+        $.ajax({ 
+            url     : 'proses.php?action=save',
+            type    : 'post',
+            data    : dataform,
+            cache   : false, 
+            success : function(msg){ 
+                if(msg=="sukses"){ 
+                    $("#status").html("Berhasil ditambah..."); 
+                }else{ 
+                    $("#status").html("ERROR.."); 
+                } 
+                    $("#loading").hide(); 
+                    $("#kode").load("proses.php","action=ambiloption"); 
+                    $("#formkode").hide();
+                    $("#kode2").val(""); 
+            }
+        }); 
+    }); 
+}); 
+</script> 
+</head> 
+    <body> 
+        <form method="POST" id="form_kategori">
+            Kode Kategori : 
+            <select id="kode"></select><p> 
+    
+            <a id="formtambah" style="cursor:pointer;color:red"> 
+                <u>Tambah Data Kategori</u>
+            </a> 
+    
+            <p style="display:none" id="formkode"> 
+            Kode :<br> 
+            <input type="text" id="kode2" name="kode2" required>
+            </p> 
+    
+            <p> 
+                Nama Kategori:<br> 
+                <input type="text" id="nm_kategori" name="nm_kategori" required><p> 
+                
+                Status :<br> 
+                <input type="checkbox" id="fg_aktif" name="fg_aktif" value="Y" checked="checked"><p> 
+                
+                <button id="tupdate">UPDATE</button> 
+                <button id="tdelete">DELETE</button> 
+                <button id="ttambah">TAMBAH</button> 
+        </form>
+        <br> 
+        <span id="status"></span> 
+        <img src="loading.gif" id="loading" style="display:none"> 
+    </body> 
+</html> 
